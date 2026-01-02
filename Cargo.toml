@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "verifier",
+    "common",
+    "api",
+    "circuits",
+    "zkvm/guest",
+    "zkvm/host",
+    "halo2/prover"]
+resolver = "2"
