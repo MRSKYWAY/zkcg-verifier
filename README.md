@@ -1,132 +1,92 @@
-# ZK-Verified Computation Gateway (ZKCG)
+# ZKCG Verifier
 
-ZK-Verified Computation Gateway (ZKCG) is a Rust-based protocol node that enables **trustless verification of off-chain computation** using zero-knowledge proofs.
+[![crates.io](https://img.shields.io/crates/v/zkcg-verifier.svg)](https://crates.io/crates/zkcg-verifier)
+[![crates.io](https://img.shields.io/crates/v/zkcg-common.svg)](https://crates.io/crates/zkcg-common)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-brightgreen)](https://github.com/sponsors/MRSKYWAY)
 
-The system allows clients to submit proofs that a computation was executed correctly **and** satisfies protocol-defined policies, without revealing private inputs or requiring the verifier to re-execute the computation.
+Public verifier and protocol library for **ZKCG** — a trustless, privacy-preserving protocol for off-chain computation verification using zero-knowledge proofs.
 
----
+- **Phase 1**: Halo2-based zk-SNARKs
+- **Phase 2** (planned): zkVM integration
 
-## Motivation
+The verifier is fully open-source and auditable so anyone can independently verify proofs and run verifier nodes.
 
-Modern systems increasingly rely on off-chain computation for performance, scalability, and privacy reasons. However, verifiers currently face a difficult tradeoff:
+## Important: Public Verifier Only
 
-- Trust the computation provider ❌
-- Re-execute the computation ❌
-- Centralize computation ❌
+This repository contains **only the public components**:
 
-ZKCG resolves this by verifying **zero-knowledge proofs of correct computation**, allowing results to be accepted without trust or recomputation.
+- Verification logic
+- Shared types and protocol definitions
+- API interfaces
+- Frozen parameters and specification
 
----
+The **proving circuits**, proof generation code, and zkVM guest programs are kept in a private repository to protect core intellectual property while developing as a solo maintainer.
 
-## Design Goals
+Anyone can:
+- Audit the verification logic
+- Run a verifier node
+- Independently verify published proofs
 
-- **Protocol-first**: Explicit state machine and deterministic transitions
-- **Trustless verification**: No trust in the prover or execution environment
-- **Privacy-preserving**: Private inputs are never revealed
-- **Production-oriented**: Long-running verifier node, not a demo
-- **Extensible**: Supports multiple proof backends (circuits, zkVMs)
-
----
-
-## High-Level Architecture
-
-
-
-Prover (Client)
-|
-|-- private computation
-|-- ZK proof generation
-v
-ZKCG Verifier Node (Rust)
-|
-|-- proof verification
-|-- policy enforcement
-|-- state transition
-v
-Persistent Protocol State
-
-
----
-
-## Core Concepts
-
-### Actors
-- **Prover**: Performs computation and generates a ZK proof
-- **Verifier Node**: Validates proofs and enforces protocol rules
-- **Observer**: Reads public protocol state (optional)
-
-### State
-The protocol maintains a deterministic state consisting of:
-- Merkle commitment root
-- Monotonically increasing nonce
-- Epoch/version identifier
-
-### Policy Enforcement
-A proof is accepted only if:
-- The ZK proof verifies successfully
-- Protocol-defined policy constraints are satisfied
-- State transition rules are respected
-
-A valid proof alone is **not sufficient** to update state.
-
----
-
-## Use Case (Phase 1)
-
-**Private Risk / Score Verification**
-
-A prover demonstrates that a score computed from private data satisfies a public threshold, without revealing the underlying data or intermediate values.
-
-This pattern applies to:
-- credit or risk checks
-- compliance validation
-- private eligibility proofs
-
----
-
-## Roadmap
-
-### Phase 1 (Core Protocol)
-- Deterministic state machine
-- Circuit-level ZK proof verification
-- Policy enforcement
-- Replay protection
-- Persistent state storage
-
-### Phase 2 (Power Move)
-- Pluggable proof backends
-- zkVM integration
-- Proof backend abstraction
-- Comparative benchmarks
-
----
+Proof generation requires access to the private components — contact [@MRSKYWAY](https://github.com/MRSKYWAY) for collaboration or sponsored access.
 
 ## Repository Structure
+```
+zkcg-verifier/
+├── common/         # Shared types, errors, and protocol utilities (zkcg-common crate)
+├── verifier/       # Core verifier node and proof verification logic (zkcg-verifier crate)
+├── api/            # API interfaces for proof submission and client interaction
+├── SPEC.md         # Full protocol specification
+├── CORE_FREEZE.md  # Frozen circuit parameters and commitments
+├── SECURITY.md     # Security assumptions and reporting
+├── LICENSE         # Apache-2.0
+└── README.md       # This file
+```
 
+## Installation
 
+Add the crates to your project:
 
-zk-compute-gateway/
-├── SPEC.md # Protocol specification
-├── SECURITY.md # Threat model and assumptions
-├── verifier/ # Rust verifier node
-├── circuits/ # ZK circuits
-├── zkvm/ # zkVM integrations (Phase 2)
-├── tests/
-├── benches/
-└── docs/
+```bash
+cargo add zkcg-verifier zkcg-common
+```
+Or manually in Cargo.toml:
+```
+toml[dependencies]
+zkcg-verifier = "0.1.0"
+zkcg-common   = "0.1.0"
+```
 
+## Features
 
----
+zk-halo2: Enable Halo2 proof verification backend (requires halo2_proofs, ff, halo2curves)
+zk-vm: Enable RISC0 zkVM verification support
 
-## Status
+Example:
+```
+zkcg-verifier = { version = "0.1.0", features = 
+"zk-halo2"] }
+```
 
-This project is under active development and is currently **pre-release**.
-Interfaces and specifications may evolve.
+## Basic Usage
+```Rust
+// Example coming soon — loading a verification key and verifying a proof
+// See examples/ directory (to be added) for full workflows
+```
 
----
+Documentation
 
+Protocol Specification
+Core Freeze Commitments
+Security Model
+
+## Contributing
+Contributions to the verifier, documentation, tests, and examples are welcome!
+Please open an issue first for major changes. See CONTRIBUTING.md (to be added).
 ## License
-
-This project is licensed under the Apache License, Version 2.0.
-
-The Apache-2.0 license was chosen to allow broad use in both open-source and commercial systems, while providing an explicit patent grant.
+Licensed under the Apache License, Version 2.0.
+See LICENSE for details.
+## Support the Project
+ZKCG is built and maintained by a single developer. Sponsorship helps dedicate more time to development, documentation, and community support instead of contract work.
+Sponsor
+Thank you for supporting independent zk development! 🚀
