@@ -186,7 +186,43 @@ docker run --rm zkcg-verifier cargo bench --bench zkvm_verify
 ```
 
 --- -->
+### End-to-End Simulation Results
 
+#### Sequential Halo2 Simulation (1000 proofs)
+
+```
+Loans evaluated: 1000
+Approvals: 128 (12.8%)
+
+Prove total:   ~482.1 s
+Verify total:  ~7.7 s
+Throughput:    ~2.0 TPS
+```
+
+#### Parallel Halo2 Simulation (8 threads)
+
+```
+Loans evaluated: 1000
+CPU threads: 8
+
+Approvals: 130 (13.0%)
+
+Prove total:   ~127.4 s
+Verify total:  ~5.5 s
+Throughput:    ~7.5 TPS
+```
+
+---
+
+### Summary
+
+| Backend | Prove Cost | Verify Cost | Throughput | Intended Use |
+|------|-----------|------------|-----------|--------------|
+| Halo2 (seq) | ~480 ms | ~7 ms | ~2 TPS | Interactive ZK policies |
+| Halo2 (8-core) | ~127 ms | ~5 ms | ~7.5 TPS | Batch / off-chain proving |
+| zkVM | ~13–17 s | ~40 ns | Prove-bound | Audit & attestation |
+
+---
 ## License
 
 Apache-2.0
