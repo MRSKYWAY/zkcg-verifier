@@ -5,43 +5,63 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-brightgreen)](https://github.com/sponsors/MRSKYWAY)
 
-Public verifier and protocol library for **ZKCG** — a trustless, privacy-preserving protocol for off-chain computation verification using zero-knowledge proofs.
+---
 
-- **Phase 1**: Halo2-based zk-SNARKs
-- **Phase 2** (planned): zkVM integration
+## Overview
 
-The verifier is fully open-source and auditable so anyone can independently verify proofs and run verifier nodes.
+**ZKCG Verifier** is the public, auditable verification layer of the ZKCG protocol.
+
+* **Phase 1**: Halo2-based zk-SNARK verification
+* **Phase 2 (planned)**: zkVM-based verification (RISC0)
+
+This repository is intentionally **verifier-only**.
+Anyone can independently verify proofs, audit the logic, and run verifier nodes.
+
+---
 
 ## Important: Public Verifier Only
 
-This repository contains **only the public components**:
+This repository contains **only public components**:
 
-- Verification logic
-- Shared types and protocol definitions
-- API interfaces
-- Frozen parameters and specification
+* Verification logic
+* Shared protocol types and errors
+* API interfaces
+* Frozen parameters and specifications
 
-The **proving circuits**, proof generation code, and zkVM guest programs are kept in a private repository to protect core intellectual property while developing as a solo maintainer.
+The following are **intentionally excluded**:
+
+* Proving circuits
+* Proof generation code
+* zkVM guest programs
+
+Those components are maintained in a **private repository** while the project is developed by a solo maintainer.
 
 Anyone can:
-- Audit the verification logic
-- Run a verifier node
-- Independently verify published proofs
 
-Proof generation requires access to the private components — contact [@MRSKYWAY](https://github.com/MRSKYWAY) for collaboration or sponsored access.
+* Audit the verifier
+* Run a verifier node
+* Independently verify published proofs
+
+Proof generation requires access to private components —
+contact [@MRSKYWAY](https://github.com/MRSKYWAY) for collaboration or sponsored access.
+
+---
 
 ## Repository Structure
-```
+
+```text
 zkcg-verifier/
 ├── common/         # Shared types, errors, and protocol utilities (zkcg-common crate)
-├── verifier/       # Core verifier node and proof verification logic (zkcg-verifier crate)
-├── api/            # API interfaces for proof submission and client interaction
+├── verifier/       # Core verifier logic (zkcg-verifier crate)
+├── api/            # HTTP API for proof submission
 ├── SPEC.md         # Full protocol specification
 ├── CORE_FREEZE.md  # Frozen circuit parameters and commitments
 ├── SECURITY.md     # Security assumptions and reporting
 ├── LICENSE         # Apache-2.0
 └── README.md       # This file
 ```
+
+---
 
 ## Installation
 
@@ -50,43 +70,131 @@ Add the crates to your project:
 ```bash
 cargo add zkcg-verifier zkcg-common
 ```
-Or manually in Cargo.toml:
-```
-toml[dependencies]
+
+Or manually in `Cargo.toml`:
+
+```toml
+[dependencies]
 zkcg-verifier = "0.1.0"
 zkcg-common   = "0.1.0"
 ```
 
+---
+
 ## Features
 
-zk-halo2: Enable Halo2 proof verification backend (requires halo2_proofs, ff, halo2curves)
-zk-vm: Enable RISC0 zkVM verification support
+* `zk-halo2` — Enable Halo2 proof verification backend
+* `zk-vm` — Enable zkVM (RISC0) verification support
 
 Example:
-```
-zkcg-verifier = { version = "0.1.0", features = 
-"zk-halo2"] }
-```
 
-## Basic Usage
-```Rust
-// Example coming soon — loading a verification key and verifying a proof
-// See examples/ directory (to be added) for full workflows
+```toml
+zkcg-verifier = { version = "0.1.0", features = ["zk-halo2"] }
 ```
 
-Documentation
+---
 
-Protocol Specification
-Core Freeze Commitments
-Security Model
+## 🐳 Docker Setup (Optional)
 
-## Contributing
-Contributions to the verifier, documentation, tests, and examples are welcome!
-Please open an issue first for major changes. See CONTRIBUTING.md (to be added).
+Docker is **optional**.
+
+* Halo2 verification runs natively
+* zkVM verification can run natively or in Docker
+* Docker is recommended for **reproducible environments and CI**
+
+### Install Docker (Ubuntu / WSL2)
+
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Verify:
+
+```bash
+docker --version
+```
+
+---
+
+### Build Docker Image
+
+From the repository root:
+
+```bash
+docker build -t zkcg-verifier .
+```
+
+
+## 📊 Benchmarks
+
+> **Environment**
+>
+> * Platform: Windows (WSL2, Ubuntu)
+> * CPU: Intel i5 (10th Gen)
+> * RAM: 16 GB
+> * Build: Release
+> * Parallelism: Default (no tuning)
+
+---
+
+### Halo2 (BN254, k = 9)
+
+**Use case:** Interactive / near-real-time ZK policy verification
+
+* **Prove:** ~306–316 ms
+* **Verify:** ~9–10 ms
+* **End-to-End:** ~317–351 ms
+
+---
+
+### zkVM (RISC0)
+
+**Use case:** Audit-grade execution proofs
+
+* **Prove:** ~13.7 seconds
+* **Verify:** ~41–42 ns
+
+---
+
+### Summary
+
+| Backend | Prove Time | Verify Time | Intended Use            |
+| ------- | ---------- | ----------- | ----------------------- |
+| Halo2   | ~310 ms    | ~9 ms       | Interactive ZK policies |
+| zkVM    | ~13–17 s   | ~40 ns      | Audit / attestation     |
+
+---
+
+<!-- ## 🧪 Running Benchmarks
+
+### Without Docker
+
+```bash
+cargo bench --bench halo2_prove
+cargo bench --bench halo2_verify
+cargo bench --bench halo2_prove_and_verify
+```
+
+### With Docker
+
+```bash
+docker run --rm zkcg-verifier cargo bench --bench zkvm_prove
+docker run --rm zkcg-verifier cargo bench --bench zkvm_verify
+```
+
+--- -->
+
 ## License
-Licensed under the Apache License, Version 2.0.
-See LICENSE for details.
+
+Apache-2.0
+
+---
+
 ## Support the Project
-ZKCG is built and maintained by a single developer. Sponsorship helps dedicate more time to development, documentation, and community support instead of contract work.
-Sponsor
-Thank you for supporting independent zk development! 🚀
+
+ZKCG is built and maintained by a single developer.
+
+👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
