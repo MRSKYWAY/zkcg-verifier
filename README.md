@@ -10,7 +10,7 @@
 ## Overview
 
 **ZKCG Verifier** is the public, auditable verification layer of the ZKCG protocol.
-
+ 
 * **Phase 1**: Halo2-based zk-SNARK verification
 * **Phase 2 (planned)**: zkVM-based verification (RISC0)
 
@@ -223,6 +223,26 @@ Throughput:    ~7.5 TPS
 | zkVM | ~13–17 s | ~40 ns | Prove-bound | Audit & attestation |
 
 ---
+
+## Real-World Integration Example
+
+ZKCG can be integrated into DeFi protocols for privacy-preserving verifications (e.g., credit score checks without revealing scores). See this demo in the [collateral_vault repository](https://github.com/MRSKYWAY/collateral_vault/blob/master/scripts/collateral_demo.ts), which shows the full on-chain + off-chain pipeline:
+
+- **Off-Chain Proof Generation**: Generate a ZK proof using ZKCG's prover (Halo2 or zkVM) for conditions like "credit score > threshold".
+- **Off-Chain Verification**: Call ZKCG's API (/v1/submit-proof) to verify the proof trustlessly.
+- **On-Chain Settlement**: If verified, anchor the new state commitment on-chain (Solana program in collateral_vault) to approve loans or unlock collateral.
+
+Run the demo: `ts-node collateral_demo.ts` (requires ZKCG API running locally).
+
+This pipeline ensures fast off-chain processing (~340ms E2E for Halo2) with on-chain immutability.
+
+## Contact
+
+For questions, collaborations, or sponsorships, reach out:
+- X (Twitter): [@sujyot]([https://x.com/sujyot](https://x.com/Sujyot10))
+- GitHub Issues: Open in this repo for verifier discussions, or in [ZKCG private repo](https://github.com/MRSKYWAY/ZKCG) for prover/circuits.
+
+---
 ## License
 
 Apache-2.0
@@ -234,3 +254,5 @@ Apache-2.0
 ZKCG is built and maintained by a single developer.
 
 👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
+
+
