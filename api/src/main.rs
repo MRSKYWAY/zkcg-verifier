@@ -6,8 +6,9 @@ use tokio::net::TcpListener;
 use zkcg_verifier::engine::VerifierEngine;
 use zkcg_common::state::ProtocolState;
 
-use api::handler::{submit_proof, AppState};
-
+use api::handler::{submit_proof, AppState, prove};
+use zkcg_verifier::backend::ProofBackend;
+use zkcg_verifier::backend_zkvm::ZkVmBackend;
 
 // Example future switch:
 // let backend: Box<dyn ProofBackend> = match backend_type {
@@ -19,15 +20,17 @@ use api::handler::{submit_proof, AppState};
 
 #[tokio::main]
 async fn main() {
-    #[cfg(feature = "zk-halo2")]
-    let backend = Box::new(verifier::backend_halo2::Halo2Backend);
+    // #[cfg(feature = "zk-halo2")]
+    // let backend = Box::new(verifier::backend_halo2::Halo2Backend);
 
-    #[cfg(not(feature = "zk-halo2"))]
-    let backend = Box::new(zkcg_verifier::backend_stub::StubBackend::default());
+    // #[cfg(not(feature = "zk-halo2"))]
+    // let backend = Box::new(zkcg_verifier::backend_stub::StubBackend::default());
+
+
 
     let engine = VerifierEngine::new(
         ProtocolState::genesis(),
-        backend,
+        Box::new(ZkVmBackend),
     );
 
 
@@ -37,6 +40,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/v1/submit-proof", post(submit_proof))
+        .route("/v1/prove", post(prove))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));

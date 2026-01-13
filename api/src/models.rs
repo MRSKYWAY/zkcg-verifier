@@ -19,3 +19,23 @@ pub struct PublicInputsDto {
 pub struct SubmitProofResponse {
     pub status: String,
 }
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProveRequest {
+    // demo inputs (can evolve later)
+    pub secret_value: u64,
+    pub threshold: u64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProveResponse {
+    pub proof: String,                 // base64
+    pub public_inputs: ProvePublicInputs,
+    pub commitment: [u8; 32],
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ProvePublicInputs {
+    pub threshold: u64,
+}

@@ -12,3 +12,10 @@ base64 = "0.22"
 
 zkcg-common = { path = "../common" }
 zkcg-verifier = { path = "../verifier" }
+zkcg-zkvm-host = { path = "../zkvm/host", optional = true }
+
+[features]
+zk-vm = [
+    "zkcg-verifier/zk-vm",
+    "zkcg-zkvm-host/zk-vm"
+]
