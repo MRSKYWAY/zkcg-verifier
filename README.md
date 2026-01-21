@@ -236,6 +236,96 @@ Run the demo: `ts-node collateral_demo.ts` (requires ZKCG API running locally).
 
 This pipeline ensures fast off-chain processing (~340ms E2E for Halo2) with on-chain immutability.
 
+## Live Demo API (Stateless)
+
+The ZKCG verifier exposes **demo-only, stateless endpoints** that allow anyone to try proof generation and verification without running the stack locally.
+
+> ⚠️ These endpoints are for **testing and demonstration only**.  
+> They do **not** persist protocol state and are **rate-limited**.
+
+**Base URL**
+```
+https://zkcg-production.up.railway.app
+```
+
+---
+
+## 1️⃣ Generate a Proof (`/demo/prove`)
+
+Generate a zero-knowledge proof that a `score` satisfies a given `threshold`.
+
+### Request
+
+```bash
+curl -X POST https://zkcg-production.up.railway.app/demo/prove \
+  -H "Content-Type: application/json" \
+  -d '{
+    "score": 90,
+    "threshold": 100
+  }'
+```
+
+### Response
+
+```json
+{
+  "proof": "<PROOF>",
+  "proof_size_bytes": 64,
+  "note": "Demo-only stateless proof"
+}
+```
+
+- `proof` is a base64-encoded ZK proof  
+- `proof_size_bytes` shows the compact proof size  
+- The proof is **not stored server-side**
+
+---
+
+## 2️⃣ Verify a Proof (`/demo/verify`)
+
+Verify a previously generated proof against a threshold.
+
+### Request
+
+```bash
+curl -X POST https://zkcg-production.up.railway.app/demo/verify \
+  -H "Content-Type: application/json" \
+  -d '{
+    "proof": "<YOUR_PROOF>",
+    "threshold": 100
+  }'
+```
+
+### Response
+
+```json
+{
+  "verified": true
+}
+```
+
+---
+
+## Notes
+
+- Demo endpoints are **stateless**
+- No protocol state is mutated
+- Intended for:
+  - quick testing
+  - integration experiments
+  - understanding the proof flow
+- Production / protocol endpoints are gated separately
+
+---
+
+## What This Demonstrates
+
+- End-to-end proof generation
+- Compact proof size
+- Deterministic verification
+- Clean HTTP boundary for ZK systems
+
+
 ## Contact
 
 For questions, collaborations, or sponsorships, reach out:
