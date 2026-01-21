@@ -39,3 +39,27 @@ pub struct ProveResponse {
 pub struct ProvePublicInputs {
     pub threshold: u64,
 }
+
+#[derive(Deserialize)]
+pub struct DemoProveRequest {
+    pub score: u64,
+    pub threshold: u64,
+}
+
+#[derive(Serialize)]
+pub struct DemoProveResponse {
+    pub proof: String, // base64
+    pub proof_size_bytes: usize,
+    pub note: &'static str,
+}
+
+#[derive(Deserialize)]
+pub struct DemoVerifyRequest {
+    pub proof: String, // base64
+    pub threshold: u64,
+}
+
+#[derive(Serialize)]
+pub struct DemoVerifyResponse {
+    pub verified: bool,
+}
