@@ -12,7 +12,7 @@
 **ZKCG Verifier** is the public, auditable verification layer of the ZKCG protocol.
  
 * **Phase 1**: Halo2-based zk-SNARK verification
-* **Phase 2 (planned)**: zkVM-based verification (RISC0)
+* **Phase 2**: zkVM-based verification (RISC0)
 
 This repository is intentionally **verifier-only**.
 Anyone can independently verify proofs, audit the logic, and run verifier nodes.
@@ -344,5 +344,6 @@ Apache-2.0
 ZKCG is built and maintained by a single developer.
 
 👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
+
 
 
