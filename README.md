@@ -16,6 +16,17 @@ It is designed for systems that want **trustless decision gating** using provabl
 
 Learn more below 👇
 
+## Motivation
+
+In many systems today (DeFi risk checks, compliance gating, permissioned access), off-chain computation results are submitted on-chain or to services using trusted oracles or signed responses. This creates a trust assumption:
+
+- Contracts must trust an oracle identity  
+- Backends must be trusted not to lie  
+- Private data often must be revealed for validation
+
+ZKCG replaces this with **verifiable computation** — results accepted only if a zero-knowledge proof of correct execution *plus policy compliance* is provided.  
+This eliminates the need for trust in a specific oracle signer and enables stronger guarantees for privacy and correctness.
+
 ## Overview
 
 **ZKCG Verifier** is the public, auditable verification layer of the ZKCG protocol.
@@ -27,34 +38,89 @@ This repository is intentionally **verifier-only**.
 Anyone can independently verify proofs, audit the logic, and run verifier nodes.
 
 ---
+## High-Level Architecture
 
-## Important: Public Verifier Only
+Modern systems often rely on oracles or trusted services to bring off-chain results on-chain or into backend logic. ZKCG replaces those with verifiable proofs.
 
-This repository contains **only public components**:
+Here’s how a typical integration looks:
 
-* Verification logic
-* Shared protocol types and errors
-* API interfaces
-* Frozen parameters and specifications
+```
+Off-chain computation
+        ↓
+   ZK proof generation
+        ↓
+   ZKCG Verifier
+ (policy + proof check)
+        ↓
+Verified result consumed
+(smart contract or service)
+```
 
-The following are **intentionally excluded**:
-
-* Proving circuits
-* Proof generation code
-* zkVM guest programs
-
-Those components are maintained in a **private repository** while the project is developed by a solo maintainer.
-
-Anyone can:
-
-* Audit the verifier
-* Run a verifier node
-* Independently verify published proofs
-
-Proof generation requires access to private components —
-contact [@MRSKYWAY](https://github.com/MRSKYWAY) for collaboration or sponsored access.
+- The prover executes private logic off-chain and outputs a proof + public result.
+- The verifier checks both **correct computation** and **policy compliance**.
+- No trusted signer or back-end oracle identity is required.
 
 ---
+
+## Example Integration: Oracle Replacement
+
+Instead of:
+
+```solidity
+// Trusted oracle pattern
+require(msg.sender == trustedOracle);
+price = oraclePrice;
+```
+
+You can do:
+
+```solidity
+// Verifiable off-chain computation
+require(verifyZKCG(proof, publicInputs));
+price = publicInputs.price;
+```
+
+With ZKCG, the contract accepts the result only if a proof of correct computation
+and policy compliance is provided — no need to trust a specific oracle address.
+
+---
+
+## Who Should Use ZKCG
+
+ZKCG is built for systems that currently rely on externally computed results where:
+
+- Trusting a specific oracle signer is undesirable
+- Privacy of inputs must be preserved
+- Proof of correct logic matters
+- Existing systems already rely on oracles or trusted backends
+
+Typical adopters include:
+
+- On-chain protocols replacing oracle signatures
+- Off-chain services needing strong correctness guarantees
+- Compliance and eligibility systems
+- Risk-based access gating
+
+---
+
+## Use Case (Phase 1): Private Eligibility Check
+
+A common pattern across many systems is:
+
+> “Can this user or entity execute some action *only if* their private data satisfies a condition?”
+
+Examples include:
+
+- Credit score ≥ threshold
+- Age ≥ 18
+- Compliance metric below risk limit
+- Private reputation above requirement
+
+ZKCG enables these decisions to be verified **without revealing private inputs**
+and **without trusting an oracle signer**.
+
+---
+
 
 ## Repository Structure
 
@@ -342,6 +408,34 @@ For questions, collaborations, or sponsorships, reach out:
 - GitHub Issues: Open in this repo for verifier discussions, or in [ZKCG private repo](https://github.com/MRSKYWAY/ZKCG) for prover/circuits.
 
 ---
+
+## Important: Public Verifier Only
+
+This repository contains **only public components**:
+
+* Verification logic
+* Shared protocol types and errors
+* API interfaces
+* Frozen parameters and specifications
+
+The following are **intentionally excluded**:
+
+* Proving circuits
+* Proof generation code
+* zkVM guest programs
+
+Those components are maintained in a **private repository** while the project is developed by a solo maintainer.
+
+Anyone can:
+
+* Audit the verifier
+* Run a verifier node
+* Independently verify published proofs
+
+Proof generation requires access to private components —
+contact [@MRSKYWAY](https://github.com/MRSKYWAY) for collaboration or sponsored access.
+
+---
 ## License
 
 Apache-2.0
@@ -353,6 +447,7 @@ Apache-2.0
 ZKCG is built and maintained by a single developer.
 
 👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
+
 
 
 
