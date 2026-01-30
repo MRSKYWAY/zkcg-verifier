@@ -6,6 +6,15 @@
 [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-brightgreen)](https://github.com/sponsors/MRSKYWAY)
 
 ---
+# ZK-Verified Computation Gateway (ZKCG)
+
+**ZKCG enables non-ZK systems to replace trusted oracle logic with verifiable off-chain computation.**  
+Instead of relying on a trusted backend or oracle signer, consumers (on-chain contracts or off-chain services) can accept results *only if* a zero-knowledge proof of correct computation and policy compliance is provided.
+
+ZKCG is a protocol-first verification primitive — not a chain, not a zk-rollup, and not a signature oracle.  
+It is designed for systems that want **trustless decision gating** using provable off-chain logic.
+
+Learn more below 👇
 
 ## Overview
 
@@ -344,6 +353,7 @@ Apache-2.0
 ZKCG is built and maintained by a single developer.
 
 👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
+
 
 
 
