@@ -27,6 +27,23 @@ In many systems today (DeFi risk checks, compliance gating, permissioned access)
 ZKCG replaces this with **verifiable computation** — results accepted only if a zero-knowledge proof of correct execution *plus policy compliance* is provided.  
 This eliminates the need for trust in a specific oracle signer and enables stronger guarantees for privacy and correctness.
 
+## What ZKCG Replaces
+
+Many systems today rely on trusted oracle services or backend signers to bring
+off-chain computation results on-chain or into critical decision paths.
+
+ZKCG replaces **trust in the computation provider** with **verifiable computation**.
+
+| Today (Common Pattern) | With ZKCG |
+|------------------------|-----------|
+| Trusted oracle signer  | Zero-knowledge proof |
+| Off-chain trust        | Cryptographic verification |
+| Backend promises       | Enforced protocol policy |
+| Revealed inputs        | Private inputs (ZK) |
+| Ad-hoc validation      | Deterministic state transitions |
+
+Instead of trusting *who* produced a result, consumers verify *how* it was produced.
+
 ## Overview
 
 **ZKCG Verifier** is the public, auditable verification layer of the ZKCG protocol.
@@ -447,6 +464,7 @@ Apache-2.0
 ZKCG is built and maintained by a single developer.
 
 👉 Sponsor: [https://github.com/sponsors/MRSKYWAY](https://github.com/sponsors/MRSKYWAY)
+
 
 
 
